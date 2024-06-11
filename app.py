@@ -87,6 +87,48 @@ def add_record():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/update-event/<int:id>', methods=['PUT'])
+def update_record(id):
+    data = request.json
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    try:
+        title = data['title']
+        start_date = data['start_date']
+        end_date = data['end_date']
+        description = data['description']
+        participants = json.dumps(data['participants'])  # Convert participants to JSON string
+        year = data['year']
+        month = data['month']
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('UPDATE events SET title = ?, start_date = ?, end_date = ?, description = ?, participants = ?, year = ?, month = ? WHERE id = ?',
+                    (title, start_date, end_date, description, participants, year, month, id))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({"success": "Event is successfully updated !!"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/delete-event/<int:id>', methods=['DELETE'])
+def delete_record(id):
+
+    try:
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('DELETE from events WHERE id = ?', (id,))
+        conn.commit()
+        conn.close()
+        return jsonify({"success": "Event is successfully deleted !!"}), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
     
 @app.route('/events/<int:year>/<int:month>', methods=['GET'])
