@@ -1,0 +1,16 @@
+version: "3"
+services:
+  reserva-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    env_file:
+      - .env
+    environment:
+      FLASK_APP: app.py  # Set the Flask app entry point
+    volumes:
+      - .:/app
+    ports:
+      - "4449:4449"
+    network_mode: host

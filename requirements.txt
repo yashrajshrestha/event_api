@@ -1,0 +1,6 @@
+Flask
+gunicorn==19.9.0
+Flask-PyMongo
+flask-cors
+python-holidayapi
+requests
