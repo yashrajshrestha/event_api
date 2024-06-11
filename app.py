@@ -5,6 +5,7 @@ import os
 import json
 import holidayapi
 import sqlite3
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -168,6 +169,55 @@ def show_all():
         'year': '2023',
         })
         return jsonify(holidays)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/get-countries', methods=['GET'])
+def show_countries():
+    try:
+        key = '56a163e6-6872-4daa-8cc1-b8538e476247'
+
+        # API endpoint
+        url = "https://holidayapi.com/v1/countries"
+
+        # Query parameters
+        params = {
+            "key": key,
+            "pretty": "true"  # Optional parameter to format the response
+        }
+
+        # Sending GET request
+        response = requests.get(url, params=params)
+    
+        # Checking response status
+        if response.status_code == 200:
+            # Parsing JSON response
+            data = response.json()
+             # Extract relevant information from the response
+            countries = data.get('countries', [])
+
+            # Create a list to store the country information
+            country_list = []
+
+            # Process each country's data
+            for country in countries:
+                country_name = country.get('name')
+                country_code = country.get('code')
+                country_flag = country.get('flag')
+
+                # Add country information to the list
+                country_info = {
+                    'name': country_name,
+                    'code': country_code,
+                    'flag': country_flag
+                }
+                country_list.append(country_info)
+
+            # Return the list of countries in JSON format
+            return json.dumps(country_list)
+        else:
+            return jsonify({"Error:", response.status_code})
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
