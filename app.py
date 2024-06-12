@@ -36,7 +36,7 @@ def initialize_db():
     cursor = conn.cursor()
 
      # Drop the events table if it exists
-    # cursor.execute('DROP TABLE IF EXISTS events')
+    cursor.execute('DROP TABLE IF EXISTS events')
     
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS events (
