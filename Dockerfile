@@ -28,4 +28,4 @@ WORKDIR /app
 
 EXPOSE 4449
 
-ENTRYPOINT ["gunicorn", "-w", "4", "-b 0.0.0.0:4449", "app:app", "--timeout", "3600"]
+ENTRYPOINT ["gunicorn", "-w", "4", "--threads", "8", "-b", "0.0.0.0:4449", "app:app", "--timeout", "30", "-k", "gevent"]
