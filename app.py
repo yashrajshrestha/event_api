@@ -12,6 +12,9 @@ CORS(app)
 
 DATABASE = 'events.db'
 
+# Retrieve environment variables
+hoilday_key = os.getenv('HOILDAY_KEY')
+
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE)
@@ -162,8 +165,8 @@ def get_events(year, month):
 @app.route('/get-holidays', methods=['GET'])
 def show_all():
     try:
-        key = '56a163e6-6872-4daa-8cc1-b8538e476247'
-        hapi = holidayapi.v1(key)
+
+        hapi = holidayapi.v1(hoilday_key)
         holidays = hapi.holidays({
         'country': 'NP',
         'year': '2023',
@@ -175,14 +178,12 @@ def show_all():
 @app.route('/get-countries', methods=['GET'])
 def show_countries():
     try:
-        key = '56a163e6-6872-4daa-8cc1-b8538e476247'
-
         # API endpoint
         url = "https://holidayapi.com/v1/countries"
 
         # Query parameters
         params = {
-            "key": key,
+            "key": hoilday_key,
             "pretty": "true"  # Optional parameter to format the response
         }
 
