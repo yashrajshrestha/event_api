@@ -36,7 +36,7 @@ def initialize_db():
     cursor = conn.cursor()
 
      # Drop the events table if it exists
-    cursor.execute('DROP TABLE IF EXISTS events')
+    # cursor.execute('DROP TABLE IF EXISTS events')
     
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS events (
@@ -179,15 +179,45 @@ def get_events(year, month):
 
     return jsonify(event_list)
 
-@app.route('/get-holidays', methods=['GET'])
+@app.route('/get-holidays', methods=['POST'])
 def show_all():
+    data = request.json
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
     try:
+
+        country = data['country']
+        year = data['year']
 
         hapi = holidayapi.v1(hoilday_key)
         holidays = hapi.holidays({
-        'country': 'NP',
-        'year': '2023',
+        'country': country,
+        'year': year
         })
+
+        if holidays['status'] == 200:
+
+            holidays_list = []
+
+            for holiday in holidays['holidays']:
+                holiday_name = holiday.get('name')
+                year, month, day = holiday.get('observed').split('-')
+
+                holiday_info = {
+                    'name': holiday_name,
+                    'year': year,
+                    'month': month,
+                    'day': day
+                }
+                holidays_list.append(holiday_info)
+
+            # Return the list of countries in JSON format
+            return jsonify(holidays_list)
+        else:
+            return jsonify({"Error:", holidays})
+
+
         return jsonify(holidays)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
