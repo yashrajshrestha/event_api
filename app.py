@@ -283,7 +283,7 @@ def send_notification(event_id, message):
 @app.route('/test_emit')
 def test_emit():
     # Emit a message to the client
-    socketio.emit('event_notification', {'event_id': '12', 'message': 'notification eimited!!'})
+    socketio.emit('event_notification', {'event_id': '12', 'message': 'Test Notification eimited for event scheduling!!'})
     return 'Message sent to client'
 
 def check_events():
